@@ -1,0 +1,11 @@
+workspace 'DelayedActionDemo'
+
+xcodeproj 'DelayedActionDemo'
+platform :ios, '7.0'
+
+target :test do
+	link_with ['DelayedActionDemoTests']
+
+	pod 'Kiwi/XCTest', '~> 2.2'
+end
+
