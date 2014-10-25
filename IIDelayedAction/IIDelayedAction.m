@@ -26,11 +26,14 @@
 - (void)action:(void (^)(void))action {
     [_queue cancelAllOperations];
     if (action) {
-        __block NSOperation* op = [NSBlockOperation blockOperationWithBlock:^{
+        BOOL onMainThread = self.onMainThread;
+        NSBlockOperation* op = [NSBlockOperation new];
+        __weak NSBlockOperation* wop = op;
+        [op addExecutionBlock:^{
             [NSThread sleepForTimeInterval:_delay];
-            if (op.isCancelled) 
+            if (!wop || wop.isCancelled)
                 return;
-            if (self.onMainThread && ![NSThread isMainThread]) {
+            if (onMainThread && ![NSThread isMainThread]) {
                 dispatch_async(dispatch_get_main_queue(), action);
             }
             else {
